@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState } from "react";
 import Link from "next/link";
@@ -15,21 +15,27 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ThemeToggle } from "@/components/ui/themeToggle";
+import { ThemeSwitcher } from "./themes/theme-switcher";
 import Logo from "@/public/logo.png";
-import { useCurrentUser } from "@/hooks/use-current-user";
 import { UserDropdown } from "./UserDropdown";
+import { ThemeToggle } from "@/components/ui/themeToggle";
 
-
-// Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
   { href: "/", label: "Home", active: true },
   { href: "/courses", label: "Courses" },
   { href: "/dashboard", label: "Dashboard" },
 ];
 
-export function Navbar() {
-  const { user, isPending } = useCurrentUser();
+// Accept user as prop (passed from the server component)
+export default function NavbarClient({
+  user,
+}: {
+  user: {
+    name?: string | null;
+    email: string;
+    image?: string | null;
+  } | null;
+}) {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   return (
@@ -118,12 +124,11 @@ export function Navbar() {
 
         {/* Right side */}
         <div className="flex items-center gap-4">
-          <ThemeToggle />
+          {/* <ThemeSwitcher /> */}
+          <ThemeToggle/>
 
-
-          {isPending ? null : user ? (
+          {user ? (
             isLoggingOut ? (
-              // Spinner replaces avatar
               <div className="size-9 flex items-center justify-center">
                 <svg className="animate-spin h-6 w-6 text-muted-foreground" viewBox="0 0 24 24">
                   <circle
@@ -162,5 +167,3 @@ export function Navbar() {
     </header>
   );
 }
-
-export default Navbar;

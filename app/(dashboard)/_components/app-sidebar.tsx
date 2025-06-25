@@ -65,136 +65,114 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
+import Image from "next/image";
 
-// This is sample data.
-// const data = {
-//   user: {
-//     name: "shadcn",
-//     email: "m@example.com",
-//     avatar: "/avatars/shadcn.jpg",
-//   },
-//   teams: [
-//     {
-//       name: "Acme Inc",
-//       logo: GalleryVerticalEnd,
-//       plan: "Enterprise",
-//     },
-//     {
-//       name: "Acme Corp.",
-//       logo: AudioWaveform,
-//       plan: "Startup",
-//     },
-//     {
-//       name: "Evil Corp.",
-//       logo: Command,
-//       plan: "Free",
-//     },
-//   ],
-//   navMain: [
-//     {
-//       title: "Playground",
-//       url: "#",
-//       icon: SquareTerminal,
-//       isActive: true,
-//       items: [
-//         {
-//           title: "History",
-//           url: "#",
-//         },
-//         {
-//           title: "Starred",
-//           url: "#",
-//         },
-//         {
-//           title: "Settings",
-//           url: "#",
-//         },
-//       ],
-//     },
-//     {
-//       title: "Models",
-//       url: "#",
-//       icon: Bot,
-//       items: [
-//         {
-//           title: "Genesis",
-//           url: "#",
-//         },
-//         {
-//           title: "Explorer",
-//           url: "#",
-//         },
-//         {
-//           title: "Quantum",
-//           url: "#",
-//         },
-//       ],
-//     },
-//     {
-//       title: "Documentation",
-//       url: "#",
-//       icon: BookOpen,
-//       items: [
-//         {
-//           title: "Introduction",
-//           url: "#",
-//         },
-//         {
-//           title: "Get Started",
-//           url: "#",
-//         },
-//         {
-//           title: "Tutorials",
-//           url: "#",
-//         },
-//         {
-//           title: "Changelog",
-//           url: "#",
-//         },
-//       ],
-//     },
-//     {
-//       title: "Settings",
-//       url: "#",
-//       icon: Settings2,
-//       items: [
-//         {
-//           title: "General",
-//           url: "#",
-//         },
-//         {
-//           title: "Team",
-//           url: "#",
-//         },
-//         {
-//           title: "Billing",
-//           url: "#",
-//         },
-//         {
-//           title: "Limits",
-//           url: "#",
-//         },
-//       ],
-//     },
-//   ],
-//   projects: [
-//     {
-//       name: "Design Engineering",
-//       url: "#",
-//       icon: Frame,
-//     },
-//     {
-//       name: "Sales & Marketing",
-//       url: "#",
-//       icon: PieChart,
-//     },
-//     {
-//       name: "Travel",
-//       url: "#",
-//       icon: Map,
-//     },
-//   ],
-// };
+const data = {
+  navMain: [
+    {
+      title: "Playground",
+      url: "#",
+      icon: SquareTerminal,
+      isActive: true,
+      items: [
+        {
+          title: "History",
+          url: "#",
+        },
+        {
+          title: "Starred",
+          url: "#",
+        },
+        {
+          title: "Settings",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Models",
+      url: "#",
+      icon: Bot,
+      items: [
+        {
+          title: "Genesis",
+          url: "#",
+        },
+        {
+          title: "Explorer",
+          url: "#",
+        },
+        {
+          title: "Quantum",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Documentation",
+      url: "#",
+      icon: BookOpen,
+      items: [
+        {
+          title: "Introduction",
+          url: "#",
+        },
+        {
+          title: "Get Started",
+          url: "#",
+        },
+        {
+          title: "Tutorials",
+          url: "#",
+        },
+        {
+          title: "Changelog",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Settings",
+      url: "#",
+      icon: Settings2,
+      items: [
+        {
+          title: "General",
+          url: "#",
+        },
+        {
+          title: "Team",
+          url: "#",
+        },
+        {
+          title: "Billing",
+          url: "#",
+        },
+        {
+          title: "Limits",
+          url: "#",
+        },
+      ],
+    },
+  ],
+  projects: [
+    {
+      name: "Design Engineering",
+      url: "#",
+      icon: Frame,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Travel",
+      url: "#",
+      icon: Map,
+    },
+  ],
+};
 
 export function AppSidebar({
   children,
@@ -233,7 +211,13 @@ export function AppSidebar({
               >
                 <Link href="/" className="flex items-center">
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-foreground text-sidebar-primary-foreground">
-                    <AudioWaveform className="size-4" />
+                    <Image
+                      src={Logo}
+                      alt="AuraSpeak Logo"
+                      width={16}
+                      height={16}
+                      className="size-8"
+                    />
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">AuraSpeak</span>
@@ -250,7 +234,7 @@ export function AppSidebar({
           <SidebarGroup>
             <SidebarGroupLabel>Platform</SidebarGroupLabel>
             <SidebarMenu>
-              {/* {data.navMain.map((item) => (
+              {data.navMain.map((item) => (
                 <Collapsible
                   key={item.title}
                   asChild
@@ -280,13 +264,13 @@ export function AppSidebar({
                     </CollapsibleContent>
                   </SidebarMenuItem>
                 </Collapsible>
-              ))} */}
+              ))}
             </SidebarMenu>
           </SidebarGroup>
           <SidebarGroup className="group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>Projects</SidebarGroupLabel>
             <SidebarMenu>
-              {/* {data.projects.map((item) => (
+              {data.projects.map((item) => (
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton asChild>
                     <a href={item.url}>
@@ -322,7 +306,7 @@ export function AppSidebar({
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </SidebarMenuItem>
-              ))} */}
+              ))}
               <SidebarMenuItem>
                 <SidebarMenuButton className="text-sidebar-foreground/70">
                   <MoreHorizontal className="text-sidebar-foreground/70" />

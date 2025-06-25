@@ -66,6 +66,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
 import Image from "next/image";
+import { ThemeToggleDropdown } from "@/components/ui/theme-toggle-dropdown";
 
 const data = {
   navMain: [
@@ -319,7 +320,7 @@ export function AppSidebar({
         <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem>
-              <DropdownMenu>
+            <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton
                     size="lg"
@@ -375,10 +376,7 @@ export function AppSidebar({
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                      <BadgeCheck />
-                      Account
-                    </DropdownMenuItem>
+                    <ThemeToggleDropdown />
                     <DropdownMenuItem>
                       <CreditCard />
                       Billing

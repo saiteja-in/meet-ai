@@ -33,6 +33,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import Logo from "@/public/logo.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -63,6 +64,7 @@ import { currentUser } from "@/lib/user";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import Link from "next/link";
 
 // This is sample data.
 // const data = {
@@ -194,7 +196,13 @@ import { toast } from "sonner";
 //   ],
 // };
 
-export function AppSidebar({ children, user }: { children: React.ReactNode; user: any }) {
+export function AppSidebar({
+  children,
+  user,
+}: {
+  children: React.ReactNode;
+  user: any;
+}) {
   //   const [activeTeam, setActiveTeam] = React.useState(data.teams[0]);
   const router = useRouter();
 
@@ -203,7 +211,7 @@ export function AppSidebar({ children, user }: { children: React.ReactNode; user
       fetchOptions: {
         onSuccess: () => {
           toast.success("Signed out Successfully");
-          router.push("/"); 
+          router.push("/");
         },
         onError: () => {
           toast.error("Failed to sign out");
@@ -218,61 +226,23 @@ export function AppSidebar({ children, user }: { children: React.ReactNode; user
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton
-                    size="lg"
-                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                  >
-                    <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                      {/* <activeTeam.logo className="size-4" /> */}
-                    </div>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-semibold">
-                        {/* {activeTeam} */}
-                        something
-                      </span>
-                      <span className="truncate text-xs">
-                        {/* {activeTeam.plan} */}
-                        someplan
-                      </span>
-                    </div>
-                    <ChevronsUpDown className="ml-auto" />
-                  </SidebarMenuButton>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-                  align="start"
-                  side="bottom"
-                  sideOffset={4}
-                >
-                  <DropdownMenuLabel className="text-xs text-muted-foreground">
-                    Teams
-                  </DropdownMenuLabel>
-                  {/* {data.teams.map((team, index) => (
-                    <DropdownMenuItem
-                      key={team.name}
-                      onClick={() => setActiveTeam(team)}
-                      className="gap-2 p-2"
-                    >
-                      <div className="flex size-6 items-center justify-center rounded-sm border">
-                        <team.logo className="size-4 shrink-0" />
-                      </div>
-                      {team.name}
-                      <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                  ))} */}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="gap-2 p-2">
-                    <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                      <Plus className="size-4" />
-                    </div>
-                    <div className="font-medium text-muted-foreground">
-                      Add team
-                    </div>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <SidebarMenuButton
+                size="lg"
+                className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground cursor-pointer"
+                asChild
+              >
+                <Link href="/" className="flex items-center">
+                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-foreground text-sidebar-primary-foreground">
+                    <AudioWaveform className="size-4" />
+                  </div>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">AuraSpeak</span>
+                    <span className="truncate text-xs text-muted-foreground">
+                      AI Voice Platform
+                    </span>
+                  </div>
+                </Link>
+              </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
@@ -382,9 +352,7 @@ export function AppSidebar({ children, user }: { children: React.ReactNode; user
                       <span className="truncate font-semibold">
                         {user?.name}
                       </span>
-                      <span className="truncate text-xs">
-                        {user?.email}
-                      </span>
+                      <span className="truncate text-xs">{user?.email}</span>
                     </div>
                     <ChevronsUpDown className="ml-auto size-4" />
                   </SidebarMenuButton>
@@ -399,8 +367,8 @@ export function AppSidebar({ children, user }: { children: React.ReactNode; user
                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                       <Avatar className="h-8 w-8 rounded-lg">
                         <AvatarImage
-                           src={user?.image || undefined}
-                           alt={user?.name}
+                          src={user?.image || undefined}
+                          alt={user?.name}
                         />
                         <AvatarFallback className="rounded-lg">
                           CN
@@ -410,9 +378,7 @@ export function AppSidebar({ children, user }: { children: React.ReactNode; user
                         <span className="truncate font-semibold">
                           {user?.name}
                         </span>
-                        <span className="truncate text-xs">
-                          {user?.email}
-                        </span>
+                        <span className="truncate text-xs">{user?.email}</span>
                       </div>
                     </div>
                   </DropdownMenuLabel>

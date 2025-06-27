@@ -1,11 +1,11 @@
 
 import React from 'react'
-import "../globals.css";
-const page = () => {
- 
+import { caller } from '@/lib/trpc/server';
+const page = async() => {
+  const greeting = await caller.hello({text:"saiteja"})
   return (
-    <div className='text-blue-600 text-6xl flex items-center justify-center min-h-screen font-mono'>
-     sai
+    <div className=''>
+     {greeting.greeting}
     </div>
   )
 }

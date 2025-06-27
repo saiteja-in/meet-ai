@@ -7,7 +7,7 @@ const page = () => {
   const trpc = useTRPC();
   const {data}= useQuery(trpc.hello.queryOptions({text:"Sai teja"}))
   return (
-    <div className='text-blue-600 text-6xl flex items-center justify-center min-h-screen font-mono'>
+    <div className=''>
       {data?.greeting}
     </div>
   )

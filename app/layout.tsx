@@ -4,10 +4,11 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { TRPCReactProvider } from "@/lib/trpc/client";
 
-const inter=Inter({
-  subsets:["latin"]
-})
+const inter = Inter({
+  subsets: ["latin"],
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,22 +31,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body 
-        className={`${inter.className} antialiased`}
-      >
-       <ThemeProvider
+    <TRPCReactProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body className={`${inter.className} antialiased`}>
+          <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
           >
-            <TooltipProvider>
-            {children}
-            </TooltipProvider>
-            <Toaster/>
+            <TooltipProvider>{children}</TooltipProvider>
+            <Toaster />
           </ThemeProvider>
-      </body>
-    </html>
+        </body>
+      </html>
+    </TRPCReactProvider>
   );
 }

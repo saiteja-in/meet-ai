@@ -1,11 +1,17 @@
+"use client"
+import { useTRPC } from '@/lib/trpc/client';
+import { useQuery } from '@tanstack/react-query';
 import React from 'react'
 
 const page = () => {
+  const trpc = useTRPC();
+  const {data}= useQuery(trpc.hello.queryOptions({text:"Sai teja"}))
   return (
-    <div>
-      here comes the dash board
+    <div className=''>
+      {data?.greeting}
     </div>
   )
 }
 
 export default page
+  

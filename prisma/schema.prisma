@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../lib/generated/prisma"
@@ -24,6 +21,7 @@ model User {
   updatedAt     DateTime
   sessions      Session[]
   accounts      Account[]
+  agents        Agent[]
 
   @@unique([email])
   @@map("user")
@@ -72,4 +70,16 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Agent {
+  id           String   @id @default(uuid())
+  name         String
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  instructions String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
+
+  @@map("agents")
 }

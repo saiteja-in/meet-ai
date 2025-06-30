@@ -1,11 +1,22 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, XCircleIcon } from "lucide-react";
 import { NewAgenDialog } from "./new-agent-dialog";
 import { useState } from "react";
+import { useAgentsFilters } from "@/hooks/use-agents-filter";
+import { DEFAULT_PAGE } from "@/prisma/types/constants";
+import { AgentsSearchFilter } from "./agents-search-filter";
 
 export const ListHeader = () => {
+  const [filters, setFilters] = useAgentsFilters();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+const isAnyFilterModified = !!filters.search;
+const onClearFilters = ()=>{
+    setFilters({
+        search:"",
+        page:DEFAULT_PAGE
+    })
+}
 
   return (
     <>
@@ -17,6 +28,14 @@ export const ListHeader = () => {
             <PlusIcon />
             New Agent
           </Button>
+        </div>
+        <div className="flex item-center gap-x-2 p-1">
+          <AgentsSearchFilter />
+          {isAnyFilterModified && (
+            <Button variant="outline" size="sm" onClick={onClearFilters}>
+                <XCircleIcon />
+            </Button>
+          )}
         </div>
       </div>
     </>

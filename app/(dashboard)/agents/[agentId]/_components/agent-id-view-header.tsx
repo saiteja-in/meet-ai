@@ -23,15 +23,15 @@ import {
   interface Props {
     agentId: string;
     agentName: string;
-    // onEdit: () => void;
-    // onRemove: () => void;
+    onEdit: () => void;
+    onRemove: () => void;
   }
   
   export function AgentViewIdHeader({
     agentId,
     agentName,
-    // onEdit,
-    // onRemove,
+    onEdit,
+    onRemove,
   }: Props) {
     return (
       <header className="space-y-2">
@@ -62,14 +62,14 @@ import {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40">
-              {/* <DropdownMenuItem className="flex items-center space-x-2" onClick={onEdit}>
+              <DropdownMenuItem className="flex items-center space-x-2" onClick={onEdit}>
                 <PencilIcon className="w-4 h-4" />
                 <span>Edit</span>
-              </DropdownMenuItem> */}
-              {/* <DropdownMenuItem className="flex items-center space-x-2 text-destructive" onClick={onRemove}>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="flex items-center space-x-2 text-destructive" onClick={onRemove}>
                 <TrashIcon className="w-4 h-4" />
                 <span>Remove</span>
-              </DropdownMenuItem> */}
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

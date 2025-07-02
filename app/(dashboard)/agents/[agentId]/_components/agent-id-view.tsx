@@ -1,24 +1,70 @@
-"use client"
-import { useSuspenseQuery } from "@tanstack/react-query";
+"use client";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { AgentViewIdHeader } from "./agent-id-view-header";
 import { GeneratedAvatar } from "@/components/generated-avatar";
 import { Badge } from "@/components/ui/badge";
 import { VideoIcon } from "lucide-react";
 import { ErrorState } from "@/components/error-state";
 import { useTRPC } from "@/lib/trpc/client";
+import { UpdateAgentDialog } from "@/components/update-agent-dialog";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useConfirm } from "@/hooks/use-confirm";
 
 interface Props {
   agentId: string;
 }
 export const AgentIdView = ({ agentId }: Props) => {
-  const trpc = useTRPC()
+  const [updateAgentDialogOpen, setUpdateAgentDialogOpen] = useState(false);
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+  const router = useRouter();
   const { data } = useSuspenseQuery(
     trpc.agents.getOne.queryOptions({ id: agentId })
   );
+  const removeAgent = useMutation(
+    trpc.agents.remove.mutationOptions({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(
+          trpc.agents.getMany.queryOptions({})
+        );
+        router.push("/agents");
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    })
+  );
+  const [RemoveConfirmation, confirmRemove] = useConfirm(
+    "Are you sure?",
+    `The following action will remove ${data.meetingCount} associated meetings`
+  );
+  const handleRemoveAgent = async () => {
+    const ok = await confirmRemove();
+    if (!ok) return;
+    await removeAgent.mutateAsync({ id: agentId });
+  };
   return (
     <>
+      <RemoveConfirmation />
+      <UpdateAgentDialog
+        open={updateAgentDialogOpen}
+        onOpenChange={setUpdateAgentDialogOpen}
+        initialValues={data}
+      />
+
       <div className="flex-1 px-4 py-4 md:px-8 flex flex-col gap-y-6">
-        <AgentViewIdHeader agentId={agentId} agentName={data.name} />
+        <AgentViewIdHeader
+          onRemove={handleRemoveAgent}
+          onEdit={() => setUpdateAgentDialogOpen(true)}
+          agentId={agentId}
+          agentName={data.name}
+        />
         <div className="bg-white rounded-lg border p-6 flex flex-col gap-y-6">
           <div className="flex items-center gap-x-4">
             <GeneratedAvatar variant="botttsNeutral" seed={data.name} />

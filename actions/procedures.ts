@@ -1,4 +1,4 @@
- // Make sure your Prisma client import is correct
+// Make sure your Prisma client import is correct
 import { createTRPCRouter, protectedProcedure } from "@/lib/trpc/init";
 import { z } from "zod";
 import { db } from "@/lib/db";
@@ -8,21 +8,82 @@ import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from "@/prisma/types/c
 import { Prisma } from "@/lib/generated/prisma";
 
 export const agentsRouter = createTRPCRouter({
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string().optional(),
+        instructions: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { id, ...data } = input;
+
+      // First check if the agent exists and belongs to the user
+      const existingAgent = await db.agent.findFirst({
+        where: {
+          id,
+          userId: ctx.auth.user.id,
+        },
+      });
+
+      if (!existingAgent) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Agent not found or you don't have permission",
+        });
+      }
+
+      // Update the agent
+      const updatedAgent = await db.agent.update({
+        where: { id },
+        data,
+      });
+
+      return updatedAgent;
+    }),
+
+  remove: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      // First check if the agent exists and belongs to the user
+      const existingAgent = await db.agent.findFirst({
+        where: {
+          id: input.id,
+          userId: ctx.auth.user.id,
+        },
+      });
+
+      if (!existingAgent) {
+        throw new TRPCError({ 
+          code: "NOT_FOUND", 
+          message: "Agent not found or you don't have permission" 
+        });
+      }
+
+      // Delete the agent
+      const deletedAgent = await db.agent.delete({
+        where: { id: input.id },
+      });
+
+      return deletedAgent;
+    }),
+
   getOne: protectedProcedure
-  .input(z.object({ id: z.string() }))
-  .query(async ({ input, ctx }) => {
-    const existingAgent = await db.agent.findFirst({
-      where: {
-        id: input.id,
-        userId: ctx.auth.user.id,
-      },
-    });
-    if (!existingAgent) {
-      throw new TRPCError({ code: "NOT_FOUND", message: "Agent not found" });
-    }
-    // meetingCount: 5 is hardcoded to match drizzle version
-    return { meetingCount: 5, ...existingAgent };
-  }),
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const existingAgent = await db.agent.findFirst({
+        where: {
+          id: input.id,
+          userId: ctx.auth.user.id,
+        },
+      });
+      if (!existingAgent) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Agent not found" });
+      }
+      // meetingCount: 5 is hardcoded to match drizzle version
+      return { meetingCount: 5, ...existingAgent };
+    }),
 
   getMany: protectedProcedure
     .input(

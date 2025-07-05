@@ -2,9 +2,17 @@ import { createTRPCRouter, protectedProcedure } from "@/lib/trpc/init";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { TRPCError } from "@trpc/server";
-import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/prisma/types/constants";
+import {
+  DEFAULT_PAGE,
+  DEFAULT_PAGE_SIZE,
+  MAX_PAGE_SIZE,
+  MIN_PAGE_SIZE,
+} from "@/prisma/types/constants";
 import { Prisma } from "@/lib/generated/prisma";
-import { meetingsInsertSchema, meetingsUpdateSchema } from "@/prisma/schema/meetings";
+import {
+  meetingsInsertSchema,
+  meetingsUpdateSchema,
+} from "@/prisma/schema/meetings";
 
 export const meetingsRouter = createTRPCRouter({
   update: protectedProcedure
@@ -25,12 +33,26 @@ export const meetingsRouter = createTRPCRouter({
         });
       }
 
+      // Update the meeting
       const updatedMeeting = await db.meeting.update({
         where: { id: input.id },
         data: input,
+        include: {
+          agent: true,
+        },
       });
 
-      return updatedMeeting;
+      // Add duration field (in seconds), like: duration = endedAt - startedAt
+      const duration =
+        updatedMeeting.endedAt && updatedMeeting.startedAt
+          ? Math.floor(
+              (updatedMeeting.endedAt.getTime() -
+                updatedMeeting.startedAt.getTime()) /
+                1000
+            )
+          : null;
+
+      return { ...updatedMeeting, duration };
     }),
 
   create: protectedProcedure
@@ -38,18 +60,36 @@ export const meetingsRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const createdMeeting = await db.meeting.create({
         data: { ...input, userId: ctx.auth.user.id },
+        include: { agent: true },
       });
 
+      // Add duration field
+      const duration =
+        createdMeeting.endedAt && createdMeeting.startedAt
+          ? Math.floor(
+              (createdMeeting.endedAt.getTime() -
+                createdMeeting.startedAt.getTime()) /
+                1000
+            )
+          : null;
 
-      return createdMeeting;
+      // TODO: Create Stream call, Upsert Stream Users
+
+      return { ...createdMeeting, duration };
     }),
 
   getMany: protectedProcedure
-    .input(z.object({
-      page: z.number().default(DEFAULT_PAGE),
-      pageSize: z.number().min(MIN_PAGE_SIZE).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
-      search: z.string().nullish(),
-    }))
+    .input(
+      z.object({
+        page: z.number().default(DEFAULT_PAGE),
+        pageSize: z
+          .number()
+          .min(MIN_PAGE_SIZE)
+          .max(MAX_PAGE_SIZE)
+          .default(DEFAULT_PAGE_SIZE),
+        search: z.string().nullish(),
+      })
+    )
     .query(async ({ ctx, input }) => {
       const { page, pageSize, search } = input;
 
@@ -68,20 +108,29 @@ export const meetingsRouter = createTRPCRouter({
       const [items, total] = await Promise.all([
         db.meeting.findMany({
           where,
-          orderBy: [
-            { createdAt: "desc" },
-            { id: "desc" },
-          ],
+          include: { agent: true },
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
           skip: (page - 1) * pageSize,
           take: pageSize,
         }),
         db.meeting.count({ where }),
       ]);
 
+      // Add duration field to each item (in seconds)
+      const itemsWithDuration = items.map((meeting) => ({
+        ...meeting,
+        duration:
+          meeting.endedAt && meeting.startedAt
+            ? Math.floor(
+                (meeting.endedAt.getTime() - meeting.startedAt.getTime()) / 1000
+              )
+            : null,
+      }));
+
       const totalPages = Math.ceil(total / pageSize);
 
       return {
-        items,
+        items: itemsWithDuration,
         total,
         totalPages,
       };
@@ -95,12 +144,26 @@ export const meetingsRouter = createTRPCRouter({
           id: input.id,
           userId: ctx.auth.user.id,
         },
+        include: { agent: true },
       });
 
       if (!existingMeeting) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Meeting not found" });
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Meeting not found",
+        });
       }
 
-      return existingMeeting;
+      // Add duration field (in seconds)
+      const duration =
+        existingMeeting.endedAt && existingMeeting.startedAt
+          ? Math.floor(
+              (existingMeeting.endedAt.getTime() -
+                existingMeeting.startedAt.getTime()) /
+                1000
+            )
+          : null;
+
+      return { ...existingMeeting, duration };
     }),
 });

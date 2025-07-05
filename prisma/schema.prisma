@@ -11,6 +11,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum MeetingStatus {
+  upcoming
+  active
+  completed
+  processing
+  cancelled
+}
+
 model User {
   id            String    @id
   name          String
@@ -22,6 +30,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   agents        Agent[]
+  meetings      Meeting[]
 
   @@unique([email])
   @@map("user")
@@ -80,6 +89,27 @@ model Agent {
   instructions String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @default(now())
+  meetings     Meeting[]
 
   @@map("agents")
+}
+
+model Meeting {
+  id            String         @id @default(uuid())
+  name          String
+  userId        String
+  agentId       String
+  status        MeetingStatus  @default(upcoming)
+  startedAt     DateTime?
+  endedAt       DateTime?
+  transcriptUrl String?
+  recordingUrl  String?
+  summary       String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now())
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  agent         Agent          @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@map("meetings")
 }

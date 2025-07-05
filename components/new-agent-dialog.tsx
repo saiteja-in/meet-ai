@@ -6,7 +6,7 @@ interface NewAgentDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export const NewAgenDialog = ({ open, onOpenChange }: NewAgentDialogProps) => {
+export const NewAgentDialog = ({ open, onOpenChange }: NewAgentDialogProps) => {
   return (
     <ResponsiveDialog
       title="New Agent"

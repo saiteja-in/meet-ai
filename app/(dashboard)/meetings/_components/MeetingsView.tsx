@@ -11,6 +11,6 @@ export const MeetingsView = () => {
 
 export const MeetingsViewError = () => {
   return (
-    <ErrorState title="Error loading " description="Something went wrong" />
+    <ErrorState title="Error loading Meetings" description="Something went wrong" />
   );
 };

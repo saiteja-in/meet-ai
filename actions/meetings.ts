@@ -13,6 +13,7 @@ import {
   meetingsInsertSchema,
   meetingsUpdateSchema,
 } from "@/prisma/schema/meetings";
+import { MeetingStatus } from "@/prisma/types/types";
 
 export const meetingsRouter = createTRPCRouter({
   update: protectedProcedure
@@ -88,10 +89,20 @@ export const meetingsRouter = createTRPCRouter({
           .max(MAX_PAGE_SIZE)
           .default(DEFAULT_PAGE_SIZE),
         search: z.string().nullish(),
+        agentId: z.string().nullish(),
+        status: z
+          .enum([
+            MeetingStatus.Upcoming,
+            MeetingStatus.Active,
+            MeetingStatus.Completed,
+            MeetingStatus.Processing,
+            MeetingStatus.Cancelled,
+          ])
+          .nullish(),
       })
     )
     .query(async ({ ctx, input }) => {
-      const { page, pageSize, search } = input;
+      const { page, pageSize, search, status, agentId } = input;
 
       const where: Prisma.MeetingWhereInput = {
         userId: ctx.auth.user.id,
@@ -103,13 +114,18 @@ export const meetingsRouter = createTRPCRouter({
               },
             }
           : {}),
+        ...(status ? { status } : {}),
+        ...(agentId ? { agentId } : {}),
       };
 
       const [items, total] = await Promise.all([
         db.meeting.findMany({
           where,
           include: { agent: true },
-          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+          orderBy: [
+            { createdAt: "desc" },
+            { id: "desc" },
+          ],
           skip: (page - 1) * pageSize,
           take: pageSize,
         }),

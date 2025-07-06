@@ -45,7 +45,7 @@ export function AppSidebarInset({ children }: { children: React.ReactNode }) {
         setOpen((open) => !open);
       }
     };
-
+              
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);

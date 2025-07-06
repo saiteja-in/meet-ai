@@ -48,7 +48,7 @@ import {
                 <ChevronRightIcon className="w-4 h-4 text-muted-foreground" />
               </BreadcrumbSeparator>
               <BreadcrumbItem>
-                <BreadcrumbLink asChild className="font-medium hover:underline text-black">
+                <BreadcrumbLink asChild className="font-medium hover:underline text-muted-foreground">
                   <Link href={`/agents/${agentId}`}>{agentName}</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>

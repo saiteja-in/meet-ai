@@ -65,7 +65,7 @@ export const AgentIdView = ({ agentId }: Props) => {
           agentId={agentId}
           agentName={data.name}
         />
-        <div className="bg-white rounded-lg border p-6 flex flex-col gap-y-6">
+        <div className="bg-background rounded-lg border p-6 flex flex-col gap-y-6">
           <div className="flex items-center gap-x-4">
             <GeneratedAvatar variant="botttsNeutral" seed={data.name} />
             <h2 className="text-2xl font-semibold">{data.name}</h2>
@@ -80,7 +80,7 @@ export const AgentIdView = ({ agentId }: Props) => {
           </Badge>
           <div className="flex flex-col gap-y-2">
             <p className="text-lg font-medium">Instructions</p>
-            <p className="text-neutral-800">{data.instructions}</p>
+            <p className="text-muted-foreground">{data.instructions}</p>
           </div>
         </div>
       </div>

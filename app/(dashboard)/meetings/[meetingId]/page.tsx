@@ -8,6 +8,7 @@ import { auth } from "@/lib/auth";
 import { getQueryClient, trpc } from "@/lib/trpc/server";
 import { Loader } from "@/components/loading-state";
 import { MeetingIdView, MeetingIdViewError } from "../_components/meeting-id-view";
+import { AgentsViewLoading } from "../../agents/_components/agents-view";
 
 
 interface Props {
@@ -35,7 +36,7 @@ const MeetingIdPage = async ({ params }: Props) => {
   
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense fallback={<Loader />}>
+      <Suspense fallback={<AgentsViewLoading />}>
         <ErrorBoundary fallback={<MeetingIdViewError />}>
           <MeetingIdView meetingId={meetingId} />
         </ErrorBoundary>

@@ -16,6 +16,42 @@ import {
 import { MeetingStatus } from "@/prisma/types/types";
 
 export const meetingsRouter = createTRPCRouter({
+  remove: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      // Delete a meeting that belongs to the user
+      const existingMeeting = await db.meeting.findFirst({
+        where: {
+          id: input.id,
+          userId: ctx.auth.user.id,
+        },
+      });
+
+      if (!existingMeeting) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Meeting not found",
+        });
+      }
+
+      const removedMeeting = await db.meeting.delete({
+        where: { id: input.id },
+        include: { agent: true },
+      });
+
+      // Add duration field (in seconds)
+      const duration =
+        removedMeeting.endedAt && removedMeeting.startedAt
+          ? Math.floor(
+              (removedMeeting.endedAt.getTime() -
+                removedMeeting.startedAt.getTime()) /
+                1000
+            )
+          : null;
+
+      return { ...removedMeeting, duration };
+    }),
+
   update: protectedProcedure
     .input(meetingsUpdateSchema)
     .mutation(async ({ ctx, input }) => {

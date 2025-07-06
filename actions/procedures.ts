@@ -69,7 +69,7 @@ export const agentsRouter = createTRPCRouter({
       return deletedAgent;
     }),
 
-  getOne: protectedProcedure
+    getOne: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input, ctx }) => {
       const existingAgent = await db.agent.findFirst({

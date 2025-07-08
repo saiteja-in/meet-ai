@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { AppSidebar } from "./_components/app-sidebar";
 import { AppSidebarInset } from "./_components/app-sidebar-inset";
 import { currentUser } from "@/lib/user";
+import { redirect } from "next/navigation";
 
 type ProviderProps = {
   children: React.ReactNode;
@@ -12,6 +13,9 @@ export async function Providers({ children }: ProviderProps) {
   const cookieStore = await cookies();
   const user = await currentUser();
 
+  if (!user) {
+    redirect("/login");
+  }
   const sidebarState = cookieStore.get("sidebar:state")?.value;
   //* get sidebar width from cookie
   const sidebarWidth = cookieStore.get("sidebar:width")?.value;

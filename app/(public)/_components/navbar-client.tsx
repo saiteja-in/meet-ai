@@ -15,7 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ThemeSwitcher } from "./themes/theme-switcher";
+// import { ThemeSwitcher } from "./themes/theme-switcher";
 import Logo from "@/public/logo.png";
 import { UserDropdown } from "./UserDropdown";
 import { ThemeToggle } from "@/components/ui/themeToggle";

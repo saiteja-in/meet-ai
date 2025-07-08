@@ -2,24 +2,24 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
-  BadgeCheck,
+  // AudioWaveform,
+  // BadgeCheck,
   Bell,
   BookOpen,
   Bot,
   ChevronRight,
   ChevronsUpDown,
-  Command,
+  // Command,
   CreditCard,
   Folder,
   Forward,
   Frame,
-  GalleryVerticalEnd,
+  // GalleryVerticalEnd,
   LogOut,
   Map,
   MoreHorizontal,
   PieChart,
-  Plus,
+  // Plus,
   Settings2,
   Sparkles,
   SquareTerminal,
@@ -41,7 +41,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
+  // DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -60,7 +60,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { currentUser } from "@/lib/user";
+// import { currentUser } from "@/lib/user";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";

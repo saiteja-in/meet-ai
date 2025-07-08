@@ -8,7 +8,6 @@ import {
   MAX_PAGE_SIZE,
   MIN_PAGE_SIZE,
 } from "@/prisma/types/constants";
-import { Prisma } from "@/lib/generated/prisma";
 import {
   meetingsInsertSchema,
   meetingsUpdateSchema,
@@ -16,6 +15,21 @@ import {
 import { MeetingStatus } from "@/prisma/types/types";
 import { streamVideo } from "@/lib/stream-video";
 import { generateAvatarUri } from "@/lib/avatar";
+import { Prisma } from "@/lib/generated/prisma";
+
+// Helper: get agent object for a meeting
+async function getAgentForMeeting(agentId: string, userId: string) {
+  const agent = await db.agent.findFirst({
+    where: { id: agentId, userId },
+  });
+  if (!agent) {
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: "Agent not found",
+    });
+  }
+  return agent;
+}
 
 export const meetingsRouter = createTRPCRouter({
   generateToken: protectedProcedure.mutation(async ({ ctx }) => {
@@ -54,6 +68,7 @@ export const meetingsRouter = createTRPCRouter({
           id: input.id,
           userId: ctx.auth.user.id,
         },
+        include: { agent: true },
       });
 
       if (!existingMeeting) {
@@ -99,6 +114,11 @@ export const meetingsRouter = createTRPCRouter({
         });
       }
 
+      // Ensure agent is owned by user
+      if (input.agentId) {
+        await getAgentForMeeting(input.agentId, ctx.auth.user.id);
+      }
+
       // Update the meeting
       const updatedMeeting = await db.meeting.update({
         where: { id: input.id },
@@ -124,6 +144,9 @@ export const meetingsRouter = createTRPCRouter({
   create: protectedProcedure
     .input(meetingsInsertSchema)
     .mutation(async ({ input, ctx }) => {
+      // Ensure agent is owned by user
+      await getAgentForMeeting(input.agentId, ctx.auth.user.id);
+
       const createdMeeting = await db.meeting.create({
         data: { ...input, userId: ctx.auth.user.id },
         include: { agent: true },
@@ -152,25 +175,13 @@ export const meetingsRouter = createTRPCRouter({
         },
       });
 
-      // Make sure agent exists, upsert agent user for Stream
-      const agent = await db.agent.findUnique({
-        where: { id: createdMeeting.agentId },
-      });
-
-      if (!agent) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Agent not found",
-        });
-      }
-
       await streamVideo.upsertUsers([
         {
-          id: agent.id,
-          name: agent.name,
+          id: createdMeeting.agent.id,
+          name: createdMeeting.agent.name,
           role: "user",
           image: generateAvatarUri({
-            seed: agent.name,
+            seed: createdMeeting.agent.name,
             variant: "botttsNeutral",
           }),
         },
@@ -220,12 +231,15 @@ export const meetingsRouter = createTRPCRouter({
           ? {
               name: {
                 contains: search,
-                mode: Prisma.QueryMode.insensitive,
+                mode: "insensitive",
               },
             }
           : {}),
         ...(status ? { status } : {}),
         ...(agentId ? { agentId } : {}),
+        agent: {
+          userId: ctx.auth.user.id, // ensure agent belongs to user
+        },
       };
 
       const [items, total] = await Promise.all([
@@ -242,16 +256,19 @@ export const meetingsRouter = createTRPCRouter({
         db.meeting.count({ where }),
       ]);
 
-      // Add duration field to each item (in seconds)
-      const itemsWithDuration = items.map((meeting) => ({
-        ...meeting,
-        duration:
-          meeting.endedAt && meeting.startedAt
-            ? Math.floor(
-                (meeting.endedAt.getTime() - meeting.startedAt.getTime()) / 1000
-              )
-            : null,
-      }));
+      // Defensive: only return meetings with valid agent
+      const itemsWithDuration = items
+        .filter(m => m.agent)
+        .map((meeting) => ({
+          ...meeting,
+          duration:
+            meeting.endedAt && meeting.startedAt
+              ? Math.floor(
+                  (meeting.endedAt.getTime() - meeting.startedAt.getTime()) /
+                    1000
+                )
+              : null,
+        }));
 
       const totalPages = Math.ceil(total / pageSize);
 
@@ -269,6 +286,7 @@ export const meetingsRouter = createTRPCRouter({
         where: {
           id: input.id,
           userId: ctx.auth.user.id,
+          agent: { userId: ctx.auth.user.id }, // ensure agent belongs to user
         },
         include: { agent: true },
       });

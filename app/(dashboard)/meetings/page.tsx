@@ -1,15 +1,15 @@
-import { getQueryClient, trpc } from "@/lib/trpc/server";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import React, { Suspense } from "react";
 import { AgentsViewLoading } from "../agents/_components/agents-view";
-import { ErrorBoundary } from "react-error-boundary";
 import { MeetingsView, MeetingsViewError } from "./_components/MeetingsView";
+import { getQueryClient, trpc } from "@/lib/trpc/server";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { MeetingsListHeader } from "@/components/meetings-list-header";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { MeetingsListHeader } from "@/components/meetings-list-header";
-import { loadSearchParams } from "@/prisma/types/params";
 import { SearchParams } from "nuqs";
+import { ErrorBoundary } from "react-error-boundary";
+import { loadSearchParams } from "@/prisma/types/params-meetings";
 interface Props {
   searchParams: Promise<SearchParams>;
 }

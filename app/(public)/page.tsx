@@ -1,11 +1,12 @@
 
 import React from 'react'
-import { caller } from '@/lib/trpc/server';
+// import { caller } from '@/lib/trpc/server';
 const page = async() => {
-  const greeting = await caller.hello({text:"saiteja"})
+  // const greeting = await caller.hello({text:"saiteja"})
   return (
     <div className=''>
-     {greeting.greeting}
+     {/* {greeting.greeting} */}
+     hai
     </div>
   )
 }

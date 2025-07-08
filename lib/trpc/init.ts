@@ -14,6 +14,7 @@ export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
+  console.log("session teja",session)
   if (!session)
     throw new TRPCError({ code: "UNAUTHORIZED", message: "Unauthorized" });
   return next({ ctx: { ...ctx, auth: session } });

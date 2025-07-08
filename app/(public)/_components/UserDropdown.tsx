@@ -44,12 +44,12 @@ export function UserDropdown({ name, email, image, onLogoutStart, onLogoutEnd }:
 
   const handleSignOut = async () => {
     try {
-      onLogoutStart && onLogoutStart();
+      void (onLogoutStart && onLogoutStart());
       await signOut();
       // 👇 Reload the page or redirect to update all client/server state instantly
       // window.location.href = "/"; // Or: window.location.reload();
     } finally {
-      onLogoutEnd && onLogoutEnd();
+      void (onLogoutEnd && onLogoutEnd());
     }
   };
 

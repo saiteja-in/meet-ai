@@ -54,6 +54,7 @@ export default function VerifyRequest() {
                 setStep("name");
               }
             } catch (error) {
+              toast.error("Error in verifying")
               // Fallback: if we can't get session, assume new user and ask for name
               setStep("name");
             }

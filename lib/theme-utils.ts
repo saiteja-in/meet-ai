@@ -34,7 +34,16 @@ export const THEME_URLS = [
     error?: string;
   };
   
-  export function convertToThemePreset(externalTheme: any): ThemePreset {
+  export type ExternalThemeData = {
+    name?: string;
+    cssVars?: {
+      theme?: Record<string, string>;
+      light?: Record<string, string>;
+      dark?: Record<string, string>;
+    };
+  };
+  
+  export function convertToThemePreset(externalTheme: ExternalThemeData): ThemePreset {
     if (externalTheme.cssVars) {
       return {
         cssVars: {
@@ -48,7 +57,7 @@ export const THEME_URLS = [
     throw new Error("Unsupported theme format");
   }
   
-  export function getThemeName(themeData: any, url: string): string {
+  export function getThemeName(themeData: ExternalThemeData, url: string): string {
     if (themeData.name) {
       return themeData.name.replace(/[-_]/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase());
     }
@@ -70,7 +79,7 @@ export const THEME_URLS = [
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      const themeData = await response.json();
+      const themeData: ExternalThemeData = await response.json();
   
       // ADD THIS LINE to log the actual theme data
       console.log("Fetched theme data for", url, themeData);

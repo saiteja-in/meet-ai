@@ -28,7 +28,7 @@ import {
   Mic,
   Bot,
 } from "lucide-react";
-import { useId, useState, useEffect } from "react";
+import {  useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export function AppSidebarInset({ children }: { children: React.ReactNode }) {

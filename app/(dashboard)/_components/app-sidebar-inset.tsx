@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/command";
 import {
   ArrowUpRight,
-  CircleFadingPlus,
   FileInput,
   FolderPlus,
   Search,
@@ -33,7 +32,7 @@ import { useId, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export function AppSidebarInset({ children }: { children: React.ReactNode }) {
-  const searchId = useId();
+  // const searchId = useId();
   const [open, setOpen] = useState(false);
   const router = useRouter();
 

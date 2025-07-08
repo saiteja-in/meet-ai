@@ -94,7 +94,7 @@ export default function VerifyRequest() {
         <CardHeader className="text-center space-y-2">
           <CardTitle className="text-xl mb-1">Complete your profile</CardTitle>
           <CardDescription>
-            We'd love to know your name to personalize your experience!
+            We&apos;d love to know your name to personalize your experience!
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-6">

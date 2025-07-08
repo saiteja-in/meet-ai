@@ -67,6 +67,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import Image from "next/image";
 import { ThemeToggleDropdown } from "@/components/ui/theme-toggle-dropdown";
+import { User } from "better-auth";
 
 const data = {
   navMain: [
@@ -180,7 +181,7 @@ export function AppSidebar({
   user,
 }: {
   children: React.ReactNode;
-  user: any;
+  user: User;
 }) {
   //   const [activeTeam, setActiveTeam] = React.useState(data.teams[0]);
   const router = useRouter();

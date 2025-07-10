@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  CallEndedEvent,
-  CallTranscriptionReadyEvent,
+//   CallEndedEvent,
+//   CallTranscriptionReadyEvent,
   CallSessionParticipantLeftEvent,
-  CallRecordingReadyEvent,
+//   CallRecordingReadyEvent,
   CallSessionStartedEvent,
 } from "@stream-io/node-sdk";
 import { db } from "@/lib/db";
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
   try {
     payload = JSON.parse(body) as Record<string, unknown>;
   } catch (error) {
-    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    return NextResponse.json({ error}, { status: 400 });
   }
 
   const eventType = (payload as Record<string, unknown>)?.type;

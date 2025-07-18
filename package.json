@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "dev:webhook": "https://auraspeak.vercel.app"
+    "dev:webhook": "ngrok http --url=mutual-mullet-brave.ngrok-free.app 3000"
   },
   "dependencies": {
     "@arcjet/inspect": "1.0.0-beta.8",

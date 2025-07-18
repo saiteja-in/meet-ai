@@ -12,7 +12,8 @@
 dummy.tsx
 # testing
 /coverage
-
+meetings.ts
+route.ts
 # next.js
 /.next/
 /out/

@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "dev:webhook": "ngrok http --url=mutual-mullet-brave.ngrok-free.app 3000"
+    "dev:webhook": "ngrok http --url=reasonably-fair-gnat.ngrok-free.app 3000"
+
   },
   "dependencies": {
     "@arcjet/inspect": "1.0.0-beta.8",
@@ -38,7 +39,7 @@
     "@radix-ui/react-toggle-group": "^1.1.10",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@stream-io/node-sdk": "^0.4.25",
-    "@stream-io/openai-realtime-api": "^0.3.3",
+    "@stream-io/openai-realtime-api": "^0.1.4",
     "@stream-io/video-react-sdk": "^1.18.10",
     "@t3-oss/env-nextjs": "^0.13.8",
     "@tanstack/react-query": "^5.81.4",
@@ -79,6 +80,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.2.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "prisma": "^6.10.1",

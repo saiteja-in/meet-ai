@@ -16,7 +16,6 @@ function verifySignatureWithSDK(body: string, signature: string): boolean {
 export async function POST(req: NextRequest) {
   const signature = req.headers.get("x-signature");
   const apiKey = req.headers.get("x-api-key");
-  console.log("teja is here mfs",signature)
 
   if (!signature || !apiKey) {
     return NextResponse.json(
@@ -24,14 +23,12 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   }
-  console.log("2")
 
   const body = await req.text();
 
   if (!verifySignatureWithSDK(body, signature)) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
-  console.log("3",body)
 
   let payload: unknown;
   try {
@@ -66,7 +63,6 @@ export async function POST(req: NextRequest) {
     if (!meeting) {
       return NextResponse.json({ error: "Meeting not found" }, { status: 404 });
     }
-    console.log("4",meeting.id)
 
     // Update meeting status
     await db.meeting.update({
@@ -81,7 +77,6 @@ export async function POST(req: NextRequest) {
     const agent = await db.agent.findUnique({
       where: { id: meeting.agentId },
     });
-    console.log("5",agent)
 
     if (!agent) {
       return NextResponse.json({ error: "Agent not found" }, { status: 404 });
@@ -89,12 +84,13 @@ export async function POST(req: NextRequest) {
 
     const call = streamVideo.video.call("default", meetingId);
 
+    console.log("before")
     const realtimeClient = await streamVideo.video.connectOpenAi({
       call,
       openAiApiKey: process.env.OPENAI_API_KEY!,
       agentUserId: agent.id,
     });
-    console.log("6",realtimeClient)
+    console.log("real time client")
 
     realtimeClient.updateSession({
       instructions: agent.instructions,
@@ -110,7 +106,6 @@ export async function POST(req: NextRequest) {
     const call = streamVideo.video.call("default", meetingId);
     await call.end();
   }
-  console.log("7 end ki ocham")
 
   return NextResponse.json({ status: "ok" });
 }
